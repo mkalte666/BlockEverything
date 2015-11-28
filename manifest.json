@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+
+    "name": "Block Everything",
+    "description": "This Extension blocks every content that does not origin on the site you are on.",
+    "version": "0.1",
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "tabs"
+    ],
+    "content_scripts": [
+    {
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["jquery.js", "storageInterface.js", "block.js"]
+    }],
+    "background": {
+        "scripts": ["jquery.js", "storage.js"]
+    }
+}

@@ -1,0 +1,41 @@
+function extractDomain(url) {
+    if(typeof(url)==="undefined") {
+        return;
+    }
+    var domain;
+    //find & remove protocol (http, ftp, etc.) and get domain
+    if (url.indexOf("://") > -1 || url.indexOf("//") > -1) {
+        domain = url.split('/')[2];
+    } 
+    else {
+        domain = url.split('/')[0];
+    }
+
+    //find & remove port number
+    domain = domain.split(':')[0];
+
+    return domain;
+}
+clearCurrentSites();
+
+getWhitelist(function(sites) {
+
+    function removeIfNeeded(elem, srcstr) 
+    {
+        var host = extractDomain(srcstr);   
+        if (hostname != host) {
+            addExternalSite(host);
+            if (sites.indexOf(host)<0) {
+                elem.remove();
+            }
+        }
+    }
+
+    var hostname = window.location.hostname;    
+
+    $("img").each(function () {
+        removeIfNeeded($(this),$(this).attr("src"));  
+    });
+
+});
+
