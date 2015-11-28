@@ -15,7 +15,8 @@
     "content_scripts": [
     {
         "matches": ["http://*/*", "https://*/*"],
-        "js": ["jquery.js", "storageInterface.js", "block.js"]
+        "js": ["jquery.js", "livequery.js", "storageInterface.js", "block.js"],
+        "run_at": "document_start"
     }],
     "background": {
         "scripts": ["jquery.js", "storage.js"]

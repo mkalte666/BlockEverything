@@ -16,26 +16,65 @@ function extractDomain(url) {
 
     return domain;
 }
-clearCurrentSites();
 
-getWhitelist(function(sites) {
+var elems = [];
 
-    function removeIfNeeded(elem, srcstr) 
+function restoreCurrentSites()
+{
+    if(elems!==null) {
+        elems.forEach(function(elem) {
+            addExternalSite(elem);
+        });
+    }
+}
+function addExternalSiteAndSave(hostname) {
+    if(elems.indexOf(hostname)<0) {
+        elems.push(hostname);
+        addExternalSite(hostname);
+    }
+}
+
+function createPopup() {
+    clearCurrentSites();
+    restoreCurrentSites();       
+}
+
+function removeIfNeeded(elem, srcstr) 
     {
+        var hostname = window.location.hostname; 
         var host = extractDomain(srcstr);   
         if (hostname != host) {
-            addExternalSite(host);
-            if (sites.indexOf(host)<0) {
-                elem.remove();
-            }
+            addExternalSiteAndSave(host);
+            getWhitelist(function(sites) {
+                if (sites.indexOf(host)<0) {
+                    elem.remove();
+                }
+            });
         }
     }
 
-    var hostname = window.location.hostname;    
 
-    $("img").each(function () {
+
+
+function setupHooks() {
+    $("img").livequery(function () {
         removeIfNeeded($(this),$(this).attr("src"));  
     });
+}
+ 
 
+var curInterval = null;
+
+$(window).on('focus', function() {
+    curInterval = setInterval(createPopup,1000);
 });
 
+$(window).on('blur', function() {
+    if(curInterval !== null) {
+        clearInterval(curInterval);
+        curInterval = null;
+    }
+});
+
+setupHooks();
+createPopup();
